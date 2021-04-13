@@ -38,6 +38,14 @@ var all = {
         safe: true
       }
     }
+  },
+
+  hue: {
+    domain: 'http://localhost:8000'
+  },
+
+  iotInspector: {
+    domain: 'http://127.0.0.1:46241'
   }
 };
 
