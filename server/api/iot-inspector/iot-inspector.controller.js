@@ -2,7 +2,7 @@ import axios from 'axios';
 import IoTInspector from './iot-inspector.model';
 import { hue, iotInspector } from '../../config/environment';
 
-export async function susbcribeDevices(req, res) {
+export async function subscribeDevices(req, res) {
   try {
     const response = await axios.get(`${iotInspector.domain}/get_device_list`);
     const data = response.data;

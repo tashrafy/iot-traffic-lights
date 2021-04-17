@@ -11,9 +11,14 @@ import config from './environment';
 import session from 'express-session';
 import connectMongo from 'connect-mongo';
 import mongoose from 'mongoose';
+import {agenda} from "../agenda";
+const Agendash = require("agendash");
 var MongoStore = connectMongo(session);
 
 export default function(app) {
+  agenda.on("ready", () => {
+    agenda.start();
+  });
   var env = app.get('env');
 
   if (env === 'development' || env === 'test') {
@@ -82,4 +87,6 @@ export default function(app) {
   if ('development' === env || 'test' === env) {
     app.use(errorHandler()); // Error handler - has to be last
   }
+
+  app.use("/dash", Agendash(agenda));
 }
