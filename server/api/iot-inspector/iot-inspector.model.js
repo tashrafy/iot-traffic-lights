@@ -1,11 +1,26 @@
 import mongoose from 'mongoose';
 
 var IoTInspectorSchema = new mongoose.Schema({
-  name: {
+  userId: {
     type: String
   },
-  rate: {
-    type: Number
+  deviceName: {
+    type: String
+  },
+  isTracking: {
+    type: Boolean
+  },
+  destinationIp: {
+    type: String
+  },
+  hostname: {
+    type: String
+  },
+  inboundBytes: {
+    type: mongoose.Decimal128
+  },
+  outboundBytes: {
+    type: mongoose.Decimal128
   }
 });
 

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import Agenda from "agenda";
 import {each, isEmpty} from "lodash";
 import config from "../config/environment";
@@ -22,21 +23,58 @@ async function scheduleReoccurringJob(name, interval, timezone, data) {
 }
 
 agenda.on("ready", () => {
+  const endpoint = `http://${config.domain}:${config.port}`;
+
   agenda.defaultConcurrency(50);
-
   agenda.define("Initialize Capture", async function(job, done) {
-    const { data: lights } = await axios.get("http://localhost:9000/api/hue/lights");
-    const { data: devices } = await axios.get("http://localhost:9000/api/iot-inspector/subscribe");
+    const userId = uuidv4();
+    const { data: lights } = await axios.get(`${endpoint}/api/hue/lights`);
+    const { data: devices } = await axios.get(`${endpoint}/api/iot-inspector/subscribe`);
 
-    await scheduleReoccurringJob("Collect Traffic", "15 seconds", "America/New_York");
+    await scheduleReoccurringJob("Collect Traffic", "15 seconds", "America/New_York", userId);
+    await scheduleReoccurringJob("Toggle Traffic Lights", "45 seconds", "America/New_York", userId);
     done();
   });
 
   agenda.define("Collect Traffic", async function(job, done) {
-    const { data: traffic } = await axios.get("http://localhost:9000/api/iot-inspector/get_traffic");
+    const userId = job.attrs.data;
+    const { data: traffic } = await axios.get(`${endpoint}/api/iot-inspector/get_traffic`, {
+      params: {
+        userId
+      }
+    });
 
     done();
-  })
+  });
+
+  agenda.define("Toggle Traffic Lights", async function(job, done) {
+    const userId = job.attrs.data;
+    const { data: traffic } = await axios.get(`${endpoint}/api/iot-inspector/aggregate_traffic`, {
+      params: {
+        userId
+      }
+    });
+    const trackingTraffic = traffic.find(item => item._id.isTracking);
+    console.log("trackingTraffic", trackingTraffic);
+    const regularTraffic = traffic.find(item => !item._id.isTracking);
+    console.log("regularTraffic", regularTraffic);
+
+    if (trackingTraffic) {
+      await axios.post(`${endpoint}/api/hue/modify_state`, {
+        hue: 0,
+        bri: (trackingTraffic.outboundBytesTotal.$numberDecimal / 1000) * 154
+      });
+    }
+
+    if (regularTraffic) {
+      await axios.post(`${endpoint}/api/hue/modify_state`, {
+        hue: 10000,
+        bri: (regularTraffic.outboundBytesTotal.$numberDecimal / 10000) * 154
+      });
+    }
+
+    done();
+  });
 
   agenda.now("Initialize Capture");
 
