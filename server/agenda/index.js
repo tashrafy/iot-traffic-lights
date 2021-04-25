@@ -31,8 +31,8 @@ agenda.on("ready", () => {
     const { data: lights } = await axios.get(`${endpoint}/api/hue/lights`);
     const { data: devices } = await axios.get(`${endpoint}/api/iot-inspector/subscribe`);
 
-    await scheduleReoccurringJob("Collect Traffic", "15 seconds", "America/New_York", userId);
-    await scheduleReoccurringJob("Toggle Traffic Lights", "45 seconds", "America/New_York", userId);
+    await scheduleReoccurringJob("Collect Traffic", "3 seconds", "America/New_York", userId);
+    await scheduleReoccurringJob("Toggle Traffic Lights", "6 seconds", "America/New_York", userId);
     done();
   });
 
@@ -64,9 +64,7 @@ agenda.on("ready", () => {
         hue: 0,
         bri: (trackingTraffic.outboundBytesTotal.$numberDecimal / 1000) * 154
       });
-    }
-
-    if (regularTraffic) {
+    } else if (regularTraffic) {
       await axios.post(`${endpoint}/api/hue/modify_state`, {
         hue: 10000,
         bri: (regularTraffic.outboundBytesTotal.$numberDecimal / 10000) * 154
