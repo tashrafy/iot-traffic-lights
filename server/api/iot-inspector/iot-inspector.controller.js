@@ -43,7 +43,7 @@ export async function getTraffic(req, res) {
         capture.isTracking = data[key][destination].is_tracking;
         capture.inboundBytes = data[key][destination].inbound_bytes_per_second;
         capture.outboundBytes = data[key][destination].outbound_bytes_per_second;
-        console.log("capture", capture);
+        // console.log("capture", capture);
 
         await capture.save();
       }

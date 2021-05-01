@@ -36,8 +36,8 @@ agenda.on("ready", () => {
     const { data: lights } = await axios.get(`${endpoint}/api/hue/lights`);
     const { data: devices } = await axios.get(`${endpoint}/api/iot-inspector/subscribe`);
 
-    await scheduleReoccurringJob("Collect Traffic", "3 seconds", "America/New_York", userId);
-    await scheduleReoccurringJob("Toggle Traffic Lights", "3 seconds", "America/New_York", userId);
+    await scheduleReoccurringJob("Collect Traffic", "2 seconds", "America/New_York", userId);
+    await scheduleReoccurringJob("Toggle Traffic Lights", "6 seconds", "America/New_York", userId);
     done();
   });
 
