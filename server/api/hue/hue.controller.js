@@ -25,7 +25,7 @@ export async function getAll(req, res) {
 
 export async function modifyState(req, res) {
   const endpoint = `${hue.domain}/api/newdeveloper/lights`;
-  console.log(req.body);
+  console.log("state values:", req.body);
   try {
     const bri = (req.body.bri || 100) + 100;
     const response = await axios.put(`${endpoint}/1/state`, {

@@ -16,6 +16,9 @@ var IoTInspectorSchema = new mongoose.Schema({
   hostname: {
     type: String
   },
+  protocol: {
+    type: Number
+  },
   inboundBytes: {
     type: mongoose.Decimal128
   },

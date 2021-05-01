@@ -38,10 +38,12 @@ export async function getTraffic(req, res) {
         capture.userId = req.query.userId;
         capture.deviceName = key;
         capture.destinationIp = destination;
+        capture.protocol = data[key][destination].protocol;
         capture.hostname = data[key][destination].hostname;
         capture.isTracking = data[key][destination].is_tracking;
         capture.inboundBytes = data[key][destination].inbound_bytes_per_second;
         capture.outboundBytes = data[key][destination].outbound_bytes_per_second;
+        console.log("capture", capture);
 
         await capture.save();
       }
@@ -68,7 +70,8 @@ export async function aggregateTraffic(req, res) {
     }, {
       $group: {
         _id: {
-          isTracking: "$isTracking"
+          isTracking: "$isTracking",
+          protocol: "$protocol"
         },
         inboundBytesTotal: { $sum: "$inboundBytes" },
         outboundBytesTotal: { $sum: "$outboundBytes" },

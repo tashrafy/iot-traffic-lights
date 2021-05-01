@@ -13,6 +13,11 @@ const agenda = new Agenda({
   },
 });
 
+const hueMap = {
+  80: 10000,
+  443: 25500
+};
+
 async function scheduleReoccurringJob(name, interval, timezone, data) {
   const job = agenda.create(name, data);
   job.repeatEvery(interval, {
@@ -32,7 +37,7 @@ agenda.on("ready", () => {
     const { data: devices } = await axios.get(`${endpoint}/api/iot-inspector/subscribe`);
 
     await scheduleReoccurringJob("Collect Traffic", "3 seconds", "America/New_York", userId);
-    await scheduleReoccurringJob("Toggle Traffic Lights", "6 seconds", "America/New_York", userId);
+    await scheduleReoccurringJob("Toggle Traffic Lights", "3 seconds", "America/New_York", userId);
     done();
   });
 
@@ -65,8 +70,9 @@ agenda.on("ready", () => {
         bri: (trackingTraffic.outboundBytesTotal.$numberDecimal / 1000) * 154
       });
     } else if (regularTraffic) {
+      const hue = hueMap[regularTraffic._id.protocol] || 10000;
       await axios.post(`${endpoint}/api/hue/modify_state`, {
-        hue: 10000,
+        hue,
         bri: (regularTraffic.outboundBytesTotal.$numberDecimal / 10000) * 154
       });
     }
