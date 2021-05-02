@@ -3,7 +3,7 @@ import Hue from './hue.model';
 import { hue } from '../../config/environment';
 
 export async function getAll(req, res) {
-  const endpoint = `${hue.domain}/api/newdeveloper/lights`;
+  const endpoint = `${hue.domain}/api/${hue.username}/lights`;
 
   try {
     const response = await axios.get(endpoint);
@@ -24,7 +24,7 @@ export async function getAll(req, res) {
 }
 
 export async function modifyState(req, res) {
-  const endpoint = `${hue.domain}/api/newdeveloper/lights`;
+  const endpoint = `${hue.domain}/api/${hue.username}/lights`;
   console.log("state values:", req.body);
   try {
     const bri = (req.body.bri || 100) + 100;

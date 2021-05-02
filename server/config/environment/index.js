@@ -43,7 +43,8 @@ var all = {
   },
 
   hue: {
-    domain: 'http://localhost:8000'
+    domain: 'http://localhost:8000',
+    username: 'newdeveloper'
   },
 
   iotInspector: {
