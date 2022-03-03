@@ -43,12 +43,12 @@ var all = {
   },
 
   hue: {
-    domain: 'http://localhost:8000',
+    domain: process.env.HUE_DOMAIN || 'http://host.docker.internal:8000',
     username: 'newdeveloper'
   },
 
   iotInspector: {
-    domain: 'http://127.0.0.1:46241'
+    domain: process.env.IOT_INSPECTOR_DOMAIN || 'http://localhost:46241'
   }
 };
 
