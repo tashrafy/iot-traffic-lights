@@ -36,10 +36,19 @@ agenda.on("ready", () => {
   console.log(endpoint, config.hue, config.audio);
 
   agenda.defaultConcurrency(50);
+
   agenda.define("Initialize Capture", async function(job, done) {
+    const jobs = await agenda.jobs();
+
+    for (const key in jobs) {
+      const existingJob = jobs[key];
+      const jobName = existingJob.attrs.name;
+
+      await agenda.cancel({ name: jobName });
+    }
+
     const userId = uuidv4();
     const { data: lights } = await axios.get(`${endpoint}/api/hue/lights`);
-    const { data: devices } = await axios.get(`${endpoint}/api/iot-inspector/subscribe`);
 
     await scheduleReoccurringJob("Collect Traffic", "2 seconds", "America/New_York", userId);
 
@@ -56,6 +65,7 @@ agenda.on("ready", () => {
 
   agenda.define("Collect Traffic", async function(job, done) {
     const userId = job.attrs.data;
+    const { data: devices } = await axios.get(`${endpoint}/api/iot-inspector/subscribe`);
     const { data: traffic } = await axios.get(`${endpoint}/api/iot-inspector/get_traffic`, {
       params: {
         userId
@@ -95,19 +105,21 @@ agenda.on("ready", () => {
 
     if (trackingTraffic) {
       console.log("trackingTraffic", trackingTraffic);
-      exec('mpg321 tracking-traffic-english.mp3', console.log)
-      player.play('tracking-traffic-english.mp3', (err) => {
-        console.log("err", err);
-        if (err) throw err
-      })
+      // exec('mplayer -ao --pulse::6 ./tracking-traffic-english.mp3', console.log)
+      exec('mplayer -ao alsa:device=hw=0.0 ./tracking-traffic-english.wav', console.log)
+      // player.play('./tracking-traffic-english.mp3', (err) => {
+      //   console.log("err", err);
+      //   if (err) throw err
+      // })
     } else if (regularTraffic) {
       console.log("regularTraffic", regularTraffic);
 
-      exec('mpg321 warning-traffic-english.mp3', console.log)
-      player.play('warning-traffic-english.mp3', (err) => {
-        console.log("err", err);
-        if (err) throw err
-      })
+      // exec('mplayer -ao --pulse::6 ./warning-traffic-english.mp3', console.log)
+      exec('mplayer -ao alsa:device=hw=0.0 ./warning-traffic-english.wav', console.log)
+      // player.play('./warning-traffic-english.mp3', (err) => {
+      //   console.log("err", err);
+      //   if (err) throw err
+      // })
     }
 
     done();

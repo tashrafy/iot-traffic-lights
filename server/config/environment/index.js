@@ -40,16 +40,16 @@ var all = {
   },
 
   hue: {
-    enabled: Boolean(process.env.ENABLE_HUE) || false,
-    domain: process.env.HUE_DOMAIN || 'http://host.docker.internal:8000',
-    username: process.env.HUE_USER || 'newdeveloper',
-    lightId: process.env.HUE_LIGHT_ID || 1
+    enabled: Boolean(process.env.ENABLE_HUE) || true,
+    domain: process.env.HUE_DOMAIN || 'http://192.168.1.57',
+    username: process.env.HUE_USER || 'fm2kbtRnqsraPJZfzHa9nmswHIJxI-tB3vMUGoGp',
+    lightId: process.env.HUE_LIGHT_ID || 14
   },
 
   audio: {
-    enabled: Boolean(process.env.ENABLE_AUDIO) || false,
-    warningTts: process.env.WARNING_TRAFFIC_TTS || "warning traffic",
-    trackingTts: process.env.TRACKING_TRAFFIC_TTS || "tracking traffic"
+    enabled: Boolean(process.env.ENABLE_AUDIO) || true,
+    warningTts: process.env.WARNING_TRAFFIC_TTS || "A flow of potentially concerning traffic has been identified from a device on the network.",
+    trackingTts: process.env.TRACKING_TRAFFIC_TTS || "A flow of tracking traffic has been identified from a device on the network."
   }
 };
 
