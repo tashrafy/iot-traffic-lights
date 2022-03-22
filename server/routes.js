@@ -2,7 +2,6 @@ import errors from './components/errors';
 import path from 'path';
 
 export default function(app) {
-  app.use('/api/iot-inspector', require('./api/iot-inspector'));
   app.use('/api/hue', require('./api/hue'));
 
   // All undefined asset or api routes should return a 404

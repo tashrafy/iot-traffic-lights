@@ -1,5 +1,5 @@
 var path = require('path');
-var _ = require('lodash');
+var merge = require('lodash/merge');
 
 function requiredProcessEnv(name) {
   if (!process.env[name]) {
@@ -35,27 +35,17 @@ var all = {
   // MongoDB connection options
   mongo: {},
 
-  iotInspector: {
-    domain: process.env.IOT_INSPECTOR_DOMAIN || 'http://localhost:46241'
-  },
-
   hue: {
     enabled: Boolean(process.env.ENABLE_HUE) || false,
     domain: process.env.HUE_DOMAIN || 'http://host.docker.internal:8000',
     username: process.env.HUE_USER || 'newdeveloper',
     lightId: process.env.HUE_LIGHT_ID || 1
-  },
-
-  audio: {
-    enabled: Boolean(process.env.ENABLE_AUDIO) || false,
-    warningTts: process.env.WARNING_TRAFFIC_TTS || "warning traffic",
-    trackingTts: process.env.TRACKING_TRAFFIC_TTS || "tracking traffic"
   }
 };
 
 // Export the config object based on the NODE_ENV
 // ==============================================
-module.exports = _.merge(
+module.exports = merge(
   all,
   require('./shared'),
   require('./' + process.env.NODE_ENV + '.js') || {});
